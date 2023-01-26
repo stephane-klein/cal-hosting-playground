@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    restart: always
+    volumes:
+      - ./volumes/postgres/:/var/lib/postgresql/data/
+
+  calcom:
+    image: calcom/cal.com:v2.5.4
+    ports:
+      - 3000:3000
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres/postgres
+      NEXT_PUBLIC_WEBAPP_URL: http://localhost:3000
+      NODE_ENV: production
+      NEXTAUTH_SECRET: secret
+      CALENDSO_ENCRYPTION_KEY: secret
+    depends_on:
+      - postgres
